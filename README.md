@@ -18,7 +18,18 @@ composer require wenhsing/url-sign
 composer remove wenhsing/url-sign
 ```
 
-## 使用
+## 基础使用方式
+
+```php
+require_once "./vendor/autoload.php";
+
+$c = new \Wenhsing\UrlSign\UrlSignManager();
+
+$c->verify('https://wenhsing.com/?timestamp=1639640957&sign=14e8ae7845907b031bfd8af08594f421'));
+
+```
+
+## 在 Laravel 中使用
 
 打开 `app/Http/Kernel.php` 文件，将 `UrlSignMiddleware` 中间件添加到 `$middlewareGroups` 的对应字段下字段下:
 
@@ -91,4 +102,31 @@ return [
         'time_error' => 300,
     ]
 ];
+```
+
+## 驱动扩展
+
+如果想要自定义驱动，可以编写一个类，然后通过 extend 进行扩展，类似
+
+```php
+require_once "./vendor/autoload.php";
+
+$c = new \Wenhsing\UrlSign\UrlSignManager();
+
+$c->extend('extendName', function ($config) {
+    return new Example($config);
+});
+
+$c->driver('extendName')->verify('https://wenhsing.com/?timestamp=1639640957&sign=14e8ae7845907b031bfd8af08594f421'));
+
+```
+
+在 Laravel 扩展可以参考下面的方式：
+
+```php
+$c = app(Wenhsing\UrlSign\UrlSignManager::class);
+$c->extend('wenhsing', function ($config) {
+    return new Test($config);
+});
+$c->driver('wenhsing')->verify('https://wenhsing.com/?timestamp=1639640957&sign=14e8ae7845907b031bfd8af08594f421');
 ```

@@ -2,6 +2,7 @@
 
 namespace Wenhsing\UrlSign;
 
+use Closure;
 use InvalidArgumentException;
 
 class UrlSignManager
@@ -80,7 +81,7 @@ class UrlSignManager
      */
     public function createDriver($name)
     {
-        if (isset($this->extends[$name])) {
+        if (isset($this->userDrivers[$name])) {
             return $this->callExtend($name);
         }
 
