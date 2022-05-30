@@ -18,7 +18,7 @@ class UrlSignMiddleware
 
     public function handle($request, Closure $next)
     {
-        if ($this->urlSign->verify($request->getUri())) {
+        if ($this->urlSign->verify($request->url(), $request->query())) {
             return $next($request);
         }
         return $this->errorResponse($request, $next);

@@ -28,12 +28,10 @@ class Md5Driver extends Driver
         $this->signField = $config['signField'] ?? $this->signField;
     }
 
-    public function verify(string $url)
+    public function verify(string $uri, array $query)
     {
-        $data = $this->parser($url);
-        $query = $data['query'];
-        if ($this->inExceptArray($data['path'], $this->except)
-            || ($this->verifyTime($query[$this->tsField] ?? 0, $this->timeError)
+        if ($this->inExceptArray($uri, $this->except)
+            || ($this->verifyTime((int)($query[$this->tsField] ?? 0), $this->timeError)
                 && $this->signMatch($query)
             )
         ) {

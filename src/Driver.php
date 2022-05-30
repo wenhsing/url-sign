@@ -4,41 +4,13 @@ namespace Wenhsing\UrlSign;
 
 abstract class Driver
 {
-    abstract public function verify(string $url);
-
-    protected function parser(string $url)
-    {
-        preg_match(
-            '/^(?:(http|https|ftp)\:\/\/)?([A-Za-z0-9\.\-]+)?(?:\:(\d+))?([^\?\#]*)?(?:\?([^\?\#]*))?(?:\#(.*))?$/',
-            $url,
-            $matches
-        );
-
-        $query = [];
-        $queryArr = explode('&', $matches[5] ?? '');
-        foreach ($queryArr as $v) {
-            if (!empty($v)) {
-                list($queryKey, $queryValue) = explode('=', $v);
-                $query[$queryKey] = $queryValue;
-            }
-        }
-
-        return [
-            'url' => $matches[0] ?? $url,
-            'scheme' => $matches[1] ?? '',
-            'host' => $matches[2] ?? '',
-            'port' => $matches[3] ?? '80',
-            'path' => $matches[4] ?? '/',
-            'query' => $query,
-            'hash' => $matches[6] ?? '',
-        ];
-    }
+    abstract public function verify(string $url, array $query);
 
     /**
+     * 判断是否在排除的路径中
+     *
      * @author Wenhsing <wenhsing@qq.com>
-     *
      * @param string $uri
-     *
      * @return bool
      */
     public function inExceptArray($uri, $arr)
@@ -61,9 +33,8 @@ abstract class Driver
      * 判断用户请求是否在对应时间范围.
      *
      * @author Wenhsing <wenhsing@qq.com>
-     *
      * @param int $timestamp
-     *
+     * @param int $error
      * @return bool
      */
     public function verifyTime($timestamp, $error)
